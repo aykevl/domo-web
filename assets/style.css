@@ -1,0 +1,83 @@
+
+html, body {
+	padding: 0;
+}
+html {
+	max-width: 700px;
+	margin: 0 auto;
+}
+body {
+	margin: 8px;
+}
+
+h1 {
+	margin-top: 0;
+}
+
+input[type=range] {
+	width: 100%;
+}
+
+.nowrap {
+	white-space: nowrap;
+}
+
+.statTable {
+	border-collapse: collapse;
+}
+.statTable th,
+.statTable td {
+	border: 1px solid #aaa;
+}
+
+#templates {
+	display: none;
+}
+
+.stats-graph {
+	width: 100%;
+}
+
+#connectionStatus {
+	border-radius: 2px;
+	float: right;
+	margin: 0;
+	padding: 2px 4px;
+}
+
+#connectionStatus.error {
+	background: rgba(255, 0, 0, 0.8);
+}
+
+#connectionStatus.connected {
+	background: rgba(115, 255, 0, 0.8);
+}
+
+#connectionStatus.connecting {
+	background: rgba(255, 179, 0, 0.8);
+}
+
+.actuator dd {
+	box-sizing: border-box;
+	margin-left: 2em;
+	margin-right: 2em;
+	width: calc(100% - 4em);
+}
+
+.actuator .sliderValue {
+	float: right;
+}
+
+.actuator input[type=range]:disabled {
+	opacity: 0.5;
+}
+
+.actuator select,
+.actuator label {
+	display: inline-block;
+	margin: 4px 16px 4px 0;
+}
+
+.actuator .slider:not(.visible) {
+	display: none;
+}
