@@ -261,10 +261,9 @@ Domo.prototype.redrawGraph = function(sensor) {
 	let timeStep = 60*60*1; // 1 hour
 
 	let graph = document.querySelector('#stats-sensor-' + sensor + ' .stats-graph');
-	let graphWidth = graph.clientWidth;
-	let graphHeight = graph.clientHeight;
-	//let graphWidth = parseFloat(graph.getAttribute('width'));
-	//let graphHeight = parseFloat(graph.getAttribute('height'));
+	let cs = getComputedStyle(graph);
+	let graphWidth = parseFloat(cs.width);
+	let graphHeight = parseFloat(cs.height);
 	let valueMin = 18.5;
 	let valueMax = 33.5;
 	let valueStep = 1;
