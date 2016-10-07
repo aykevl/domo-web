@@ -499,14 +499,14 @@ Domo.prototype.updateActuators = function(updateInputs) {
 			if (actuatorName === 'color') {
 				if (actuator.isWhite) {
 					enabled = input.name === 'isWhite';
-				} else if (input.name === 'mode' || input.name === 'isWhite' || input.name === 'looping') {
+				} else if (input.name === 'mode' || input.name === 'isWhite') {
 					enabled = true;
 				} else if (actuator.mode === 'hsv' || actuator.mode === 'hsv-max') {
 					if (input.name === 'time' && actuator.looping) {
 						enabled = true;
 					} else if (input.name === 'hue' && !actuator.looping) {
 						enabled = true;
-					} else if (input.name === 'saturation' || input.name === 'value') {
+					} else if (input.name === 'saturation' || input.name === 'value' || input.name == 'looping') {
 						enabled = true;
 					}
 				} else if (actuator.mode === 'rgb') {
