@@ -405,7 +405,8 @@ Domo.prototype.setupActuators = function() {
 		let inputList = div.querySelectorAll('[name]');
 		for (let i_il=0; i_il<inputList.length; i_il++) {
 			let input = inputList[i_il];
-			if (input.tagName.toLowerCase() == 'input' && input.type == 'checkbox') {
+			let tagName = input.tagName.toLowerCase();
+			if (tagName == 'select' || tagName == 'input' && input.type == 'checkbox') {
 				input.addEventListener('change', (e) => {
 					this.updateActuatorInput(actuatorName, input);
 				});
