@@ -2,6 +2,7 @@
 
 const UNITS = {
 	'temperature': '°C',
+	'humidity': '%',
 };
 const CONN_NONE = 0;
 const CONN_CONNECTING = 1;
