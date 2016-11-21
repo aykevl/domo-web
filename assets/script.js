@@ -566,10 +566,8 @@ Domo.prototype.updateActuators = function(updateInputs) {
 
 			// Enable inputs based on knowing what actuator it is and how it
 			// works.
-			if (actuatorName === 'color') {
-				if (actuator.isWhite) {
-					enabled = input.name === 'isWhite';
-				} else if (input.name === 'mode' || input.name === 'isWhite') {
+			if (actuatorName === 'colorlight') {
+				if (input.name === 'mode') {
 					enabled = true;
 				} else if (actuator.mode === 'hsv' || actuator.mode === 'hsv-max') {
 					if (input.name === 'time' && actuator.looping) {
