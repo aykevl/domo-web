@@ -169,13 +169,13 @@ Domo.prototype.updateSensorData = function(sensorData) {
 			sensor.data.log = data.log;
 		} else if (data.log.length == 0) {
 			// no new data
-			return;
+			continue;
 		} else if (olddata.log[olddata.log.length-1].time < data.log[data.log.length-1].time) {
 			// add new data to existing data
 			this.addSensorLog(sensorName, data.log);
-			return;
+			continue;
 		} else {
-			return;
+			continue;
 		}
 		this.redrawStats(sensorName);
 	}
