@@ -4,6 +4,10 @@ const UNITS = {
 	'temperature': '°C',
 	'humidity': '%',
 };
+const SENSOR_ORDER = [
+	'temperature',
+	'humidity',
+];
 const CONN_NONE = 0;
 const CONN_CONNECTING = 1;
 const CONN_OK = 2;
@@ -36,6 +40,8 @@ function Domo() {
 		this.sensors[name] = {
 			data: sensorData[name],
 		};
+	}
+	for (let name of this.sensorKeys()) {
 		this.redrawStats(name);
 	}
 	this.actuators = JSON.parse(localStorage['actuators'] || '{}');
@@ -250,6 +256,24 @@ Domo.prototype.redrawStats = function(sensor) {
 
 	this.sensors[sensor].graph = {};
 	this.redrawGraph(sensor);
+}
+
+Domo.prototype.sensorKeys = function() {
+	// Put the sensors in a fixed order.
+	let keys = [];
+	for (let key in this.sensors) {
+		keys.push(key);
+	}
+	keys.sort();
+	for (let i=0; i<SENSOR_ORDER.length; i++) {
+		let index = keys.indexOf(SENSOR_ORDER[i]);
+		if (index > i) {
+			// Put at the start of the array.
+			keys.splice(i, 0, keys.pop(index));
+		}
+	}
+	console.log('keys', keys);
+	return keys;
 }
 
 Domo.prototype.redrawGraph = function(sensor) {
