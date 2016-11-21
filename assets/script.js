@@ -16,6 +16,8 @@ const CONTROL_WS_URL = 'wss://' + window.location.host + '/api/ws/control';
 const CONNECTED = 1; // line style
 const DOTTED    = 2; // line style
 const GRAPH_TIME = 60*60*24; // graph displays one day
+const GRAPH_MIN_HEIGHT = 10;
+const GRAPH_Y_NUMBER_INTERVAL = 5;
 var domo;
 
 function zeroPad(n, size) {
@@ -167,10 +169,11 @@ Domo.prototype.updateSensorData = function(sensorData) {
 		let sensor = this.sensors[sensorName];
 		if (!olddata) {
 			sensor.data = data;
-		} else if (data.humanName != olddata.humanName || data.type != olddata.type) {
+		} else if (data.humanName !== olddata.humanName || data.type !== olddata.type || data.desiredValue !== olddata.desiredValue) {
 			// data.name is an invariant (if it changed, the sensorName changes as well)
 			sensor.data.humanName = data.humanName;
 			sensor.data.type = data.type;
+			sensor.data.desiredValue = data.desiredValue;
 		} else if (!olddata.log || !olddata.log.length) {
 			sensor.data.log = data.log;
 		} else if (data.log.length == 0) {
@@ -243,8 +246,6 @@ Domo.prototype.redrawStats = function(sensor) {
 	let oldDiv = document.querySelector('#stats-sensor-' + sensor);
 	let div = document.querySelector('#templates > .stats').cloneNode(true);
 
-	div.querySelector('.stats-header').innerText = data.humanName || sensor;
-
 	// Replace old stats with new one
 	if (oldDiv === null) {
 		document.querySelector('#stats').appendChild(div);
@@ -279,20 +280,62 @@ Domo.prototype.sensorKeys = function() {
 Domo.prototype.redrawGraph = function(sensor) {
 	let data = this.sensors[sensor].data;
 	let now = new Date();
-	let interval = data.log[data.log.length-1].interval;
+	let lastLog = data.log[data.log.length-1];
+	let interval = lastLog ? lastLog.interval : 60;
 	let timeEnd = Math.floor(now.getTime() / 1000.0 / interval) * interval + interval/2;
 	let timeStart = timeEnd - GRAPH_TIME;
 	let timeSpan = timeEnd - timeStart;
 	let timeStep = 60*60*1; // 1 hour
 
-	let graph = document.querySelector('#stats-sensor-' + sensor + ' .stats-graph');
+	let graphWrapper = document.getElementById('stats-sensor-' + sensor);
+	let graph = graphWrapper.querySelector('.stats-graph');
 	let cs = getComputedStyle(graph);
 	let graphWidth = parseFloat(cs.width);
 	let graphHeight = parseFloat(cs.height);
-	let valueMin = 14.5;
-	let valueMax = 33.5;
+
+	let valueMin = Infinity;
+	let valueMax = -Infinity;
+	for (let row of data.log) {
+		if (row.value > valueMax) {
+			valueMax = row.value;
+		}
+		if (row.value < valueMin) {
+			valueMin = row.value;
+		}
+	}
+	if (valueMin == Infinity || valueMax == -Infinity) {
+		// Just so it won't fail.
+		valueMin = 20;
+		valueMax = 50;
+	} else {
+		valueMin -= 1;
+		valueMax += 1;
+		if (data.desiredValue) {
+			// Make sure the desiredValue is visible.
+			if (valueMin >= data.desiredValue) {
+				valueMin = data.desiredValue - 1;
+			} else if (valueMax <= data.desiredValue) {
+				valueMax = data.desiredValue + 1;
+			}
+		}
+		let diff = valueMax - valueMin;
+		if (diff < GRAPH_MIN_HEIGHT) {
+			valueMax += (GRAPH_MIN_HEIGHT - diff) / 2;
+			valueMin -= (GRAPH_MIN_HEIGHT - diff) / 2;
+		}
+	}
+	if (valueMin >= valueMax) {
+		throw 'impossible: min > max';
+	}
+
 	let valueStep = 1;
 	let valueSpan = valueMax - valueMin;
+
+	let lastValueStr = lastLog ? lastLog.value.toFixed(1) : '(unknown)';
+	if (data.type in UNITS) {
+		lastValueStr += UNITS[data.type];
+	}
+	graphWrapper.querySelector('.stats-header').innerText = (data.humanName || sensor) + ' — ' + lastValueStr;
 
 	if (graphWidth === this.sensors[sensor].graph.width) {
 		return;
@@ -318,24 +361,26 @@ Domo.prototype.redrawGraph = function(sensor) {
 	let gridStrokeWidth = (Math.max(1, Math.floor(devicePixelRatio*0.7)) / devicePixelRatio).toFixed(3)+'px';
 	let grid = graph.querySelector('.grid');
 	grid.innerHTML = '';
-	for (let y=Math.ceil(valueMax)*5; y>=valueMin*5; y-=valueStep) {
-		let v = y / 5;
+	for (let y=Math.ceil(valueMax)*1; y>=valueMin*1; y-=valueStep) {
+		let v = y/1;
 		let line;
-		if (y % 25 === 0) {
+		if (y % GRAPH_Y_NUMBER_INTERVAL === 0) {
 			line = document.querySelector('#templates > .graph-grid-line-y1').cloneNode(true);
-		} else if (y % 5 === 0) {
-			line = document.querySelector('#templates > .graph-grid-line-y2').cloneNode(true);
 		} else {
-			line = document.querySelector('#templates > .graph-grid-line-y3').cloneNode(true);
+			line = document.querySelector('#templates > .graph-grid-line-y2').cloneNode(true);
 		}
 		line.setAttribute('y1', roundedCoord(toGraphY(v)).toFixed(3)+'px');
 		line.setAttribute('y2', roundedCoord(toGraphY(v)).toFixed(3)+'px');
 		line.setAttribute('stroke-width', gridStrokeWidth);
 		grid.appendChild(line);
-		if (y % 25 === 0) {
+		if (v % GRAPH_Y_NUMBER_INTERVAL === 0) {
 			let text = document.querySelector('#templates > .graph-grid-text-y').cloneNode(true);
 			text.setAttribute('y', roundedCoord(toGraphY(v)-2).toFixed(3)+'px');
-			text.textContent = v + UNITS[data.type];
+			if (data.type in UNITS) {
+				text.textContent = v + UNITS[data.type];
+			} else {
+				text.textContent = v;
+			}
 			grid.appendChild(text);
 		}
 	}
