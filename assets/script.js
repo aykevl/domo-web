@@ -567,10 +567,10 @@ Domo.prototype.updateActuators = function(updateInputs) {
 			// Enable inputs based on knowing what actuator it is and how it
 			// works.
 			if (actuatorName === 'colorlight') {
-				if (input.name === 'mode') {
+				if (input.name === 'mode' || input.name == 'disabled') {
 					enabled = true;
 				} else if (actuator.mode === 'hsv' || actuator.mode === 'hsv-max') {
-					if (input.name === 'time' && actuator.looping) {
+					if ((input.name === 'time' || input.name == 'reverse') && actuator.looping) {
 						enabled = true;
 					} else if (input.name === 'hue' && !actuator.looping) {
 						enabled = true;
