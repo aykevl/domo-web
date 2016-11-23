@@ -5,7 +5,6 @@
 		<meta charset="utf-8"/>
 		<title>Domotica</title>
 		<link rel="stylesheet" href="/assets/style.css"/>
-		<script src="/assets/script.js" async=""></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<link rel="manifest" href="/manifest.json"/>
 		<link rel="icon" sizes="32x32" href="/assets/icon32.png"/>
@@ -14,9 +13,14 @@
 	<body>
 		<p id="connectionStatus"></p>
 		<h1>Domotica</h1>
-		<div id="stats"></div>
-		<div class="actuator" data-actuator="colorlight">
-			<h2>Light</h2>
+		<div id="tabs">
+			<a href="#stats" class="tab" id="tab-stats">Sensor</a>
+			<a href="#colorlight" class="tab" id="tab-colorlight">Color</a>
+			<a href="#wakeup" class="tab" id="tab-wakeup">Wakeup</a>
+		</div>
+		<div class="tabdata" id="stats"></div>
+		<div class="tabdata actuator" id="colorlight" data-actuator="colorlight">
+			<h2>Color</h2>
 			<dl>
 				<dt>Mode:</dt>
 				<dd>
@@ -68,7 +72,12 @@
 				</div>
 			</dl>
 		</div>
+		<div class="tabdata actuator" id="wakeup">
+			<h2>Wakeup</h2>
+		</div>
 	</body>
+	<script src="/assets/script.js"></script>
+	<script src="/assets/domo.js"></script>
 	<div id="templates">
 		<div class="stats">
 			<h2 class="stats-header"></h2>
