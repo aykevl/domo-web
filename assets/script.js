@@ -44,6 +44,22 @@ function setupTabs() {
     // Save this location.
     localStorage.currentTab = currentHash;
   });
+
+  // Add an event to replace the anchor, instead of adding a new one.
+  for (let i=0; i<tabs.length; i++) {
+    let tab = tabs[i];
+    tab.addEventListener('click', function(e) {
+      // We handle this, don't let the browser handle it.
+      e.preventDefault();
+
+      // Overwrite the current state (so you can't click back to the previous
+      // tab).
+      history.replaceState(null, '', tab.hash);
+
+      // This is at least necessary in Chrome.
+      window.dispatchEvent(new Event('hashchange'));
+    });
+  }
 }
 
 setupTabs();
