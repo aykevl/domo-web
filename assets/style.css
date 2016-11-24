@@ -79,6 +79,7 @@ input[type=range] {
 
 .stats-graph {
 	width: 100%;
+	height: 150px;
 }
 
 #connectionStatus {
