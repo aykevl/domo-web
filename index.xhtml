@@ -11,69 +11,70 @@
 		<link rel="icon" sizes="128x128" href="/assets/icon128.png"/>
 	</head>
 	<body>
-		<p id="connectionStatus"></p>
-		<h1>Domotica</h1>
+		<h1>Domotica <p id="connectionStatus"></p></h1>
 		<div id="tabs">
 			<a href="#stats" class="tab" id="tab-stats">Sensor</a>
 			<a href="#colorlight" class="tab" id="tab-colorlight">Color</a>
 			<a href="#wakeup" class="tab" id="tab-wakeup">Wakeup</a>
 		</div>
-		<div class="tabdata" id="stats"></div>
-		<div class="tabdata actuator" id="colorlight" data-actuator="colorlight">
-			<h2>Color</h2>
-			<dl>
-				<dt>Mode:</dt>
-				<dd>
-					<select name="mode" disabled="">
-						<option value="hsv">HSV</option>
-						<option value="hsv-max">HSV maximized</option>
-						<option value="rgb">RGB</option>
-					</select>
-					<label class="nowrap">
-						<input type="checkbox" name="disabled" disabled=""/>
-						Disabled
-					</label>
-					<label class="nowrap">
-						<input type="checkbox" name="looping" disabled=""/>
-						Looping
-					</label>
-					<label class="nowrap">
-						<input type="checkbox" name="reverse" disabled=""/>
-						Reverse
-					</label>
-				</dd>
-				<div class="slider">
-					<dt>Time: <span class="sliderValue"></span></dt>
-					<dd><input type="range" name="time" min="0" max="11.37" data-unit="time" data-exp="" step="0.01" disabled=""/></dd>
-				</div>
-				<div class="slider">
-					<dt>Color: <span class="sliderValue"></span></dt>
-					<dd><input type="range" name="hue" min="0" max="1" step="0.001" value="0" disabled=""/></dd>
-				</div>
-				<div class="slider">
-					<dt>Saturation: <span class="sliderValue"></span></dt>
-					<dd><input type="range" name="saturation" min="0" max="1" step="0.001" disabled=""/></dd>
-				</div>
-				<div class="slider">
-					<dt>Brightness: <span class="sliderValue"></span></dt>
-					<dd><input type="range" name="value" min="0" max="1" step="0.001" disabled=""/></dd>
-				</div>
-				<div class="slider">
-					<dt>Red: <span class="sliderValue"></span></dt>
-					<dd><input type="range" name="red" min="0" max="1" step="0.001" disabled=""/></dd>
-				</div>
-				<div class="slider">
-					<dt>Green: <span class="sliderValue"></span></dt>
-					<dd><input type="range" name="green" min="0" max="1" step="0.001" disabled=""/></dd>
-				</div>
-				<div class="slider">
-					<dt>Blue: <span class="sliderValue"></span></dt>
-					<dd><input type="range" name="blue" min="0" max="1" step="0.001" disabled=""/></dd>
-				</div>
-			</dl>
-		</div>
-		<div class="tabdata actuator" id="wakeup">
-			<h2>Wakeup</h2>
+		<div id="tabfield">
+			<div class="tabdata" id="stats"></div>
+			<div class="tabdata actuator" id="colorlight" data-actuator="colorlight">
+				<h2>Color</h2>
+				<dl>
+					<dt>Mode:</dt>
+					<dd>
+						<select name="mode" disabled="">
+							<option value="hsv">HSV</option>
+							<option value="hsv-max">HSV maximized</option>
+							<option value="rgb">RGB</option>
+						</select>
+						<label class="nowrap">
+							<input type="checkbox" name="disabled" disabled=""/>
+							Disabled
+						</label>
+						<label class="nowrap">
+							<input type="checkbox" name="looping" disabled=""/>
+							Looping
+						</label>
+						<label class="nowrap">
+							<input type="checkbox" name="reverse" disabled=""/>
+							Reverse
+						</label>
+					</dd>
+					<div class="slider">
+						<dt>Time: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="time" min="0" max="11.37" data-unit="time" data-exp="" step="0.01" disabled=""/></dd>
+					</div>
+					<div class="slider">
+						<dt>Color: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="hue" min="0" max="1" step="0.001" value="0" disabled=""/></dd>
+					</div>
+					<div class="slider">
+						<dt>Saturation: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="saturation" min="0" max="1" step="0.001" disabled=""/></dd>
+					</div>
+					<div class="slider">
+						<dt>Brightness: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="value" min="0" max="1" step="0.001" disabled=""/></dd>
+					</div>
+					<div class="slider">
+						<dt>Red: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="red" min="0" max="1" step="0.001" disabled=""/></dd>
+					</div>
+					<div class="slider">
+						<dt>Green: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="green" min="0" max="1" step="0.001" disabled=""/></dd>
+					</div>
+					<div class="slider">
+						<dt>Blue: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="blue" min="0" max="1" step="0.001" disabled=""/></dd>
+					</div>
+				</dl>
+			</div>
+			<div class="tabdata actuator" id="wakeup">
+				<h2>Wakeup</h2>
+			</div>
 		</div>
 	</body>
 	<script src="/assets/script.js"></script>
