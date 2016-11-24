@@ -15,7 +15,11 @@ function setupTabs() {
     currentHash  = document.location.hash.substr(1);
   }
   if (tabIds.indexOf(currentHash) < 0) {
-    currentHash = tabIds[0];
+    if (localStorage.currentTab && tabIds.indexOf(localStorage.currentTab) >= 0) {
+      currentHash = localStorage.currentTab;
+    } else {
+      currentHash = tabIds[0];
+    }
     document.location.hash = '#' + currentHash;
   }
 
@@ -36,6 +40,9 @@ function setupTabs() {
 
     // Force a resize.
     window.dispatchEvent(new Event('resize'));
+
+    // Save this location.
+    localStorage.currentTab = currentHash;
   });
 }
 
