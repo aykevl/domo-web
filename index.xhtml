@@ -72,8 +72,25 @@
 					</div>
 				</dl>
 			</div>
-			<div class="tabdata actuator" id="wakeup">
+			<div class="tabdata actuator" id="wakeup" data-actuator="wakeup">
 				<h2>Wakeup</h2>
+				<dl>
+					<dt>State:</dt>
+					<dd>
+						<label><input type="radio" name="state" value="off"/>Off</label>
+						<label><input type="radio" name="state" value="wake"/>Wake</label>
+						<label><input type="radio" name="state" value="on"/>On</label>
+					</dd>
+
+					<dt>Time:</dt>
+					<dd>
+						<input type="number" name="time" min="1" max="60" step="1" data-type="hours-tz"/> :
+						<input type="number" name="time" min="1" max="60" step="1" data-type="minutes-tz"/>
+					</dd>
+
+					<dt>Duration:</dt>
+					<dd><input type="number" name="duration" min="1" max="60" step="1" data-type="minutes"/> minutes</dd>
+				</dl>
 			</div>
 		</div>
 	</body>

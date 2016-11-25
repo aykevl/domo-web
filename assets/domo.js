@@ -475,7 +475,7 @@ Domo.prototype.setupActuators = function() {
 		for (let i_il=0; i_il<inputList.length; i_il++) {
 			let input = inputList[i_il];
 			let tagName = input.tagName.toLowerCase();
-			if (tagName == 'select' || tagName == 'input' && input.type == 'checkbox') {
+			if (tagName == 'select' || tagName == 'input' && (input.type == 'checkbox' || input.type == 'radio')) {
 				input.addEventListener('change', (e) => {
 					this.updateActuatorInput(actuatorName, input);
 				});
@@ -490,14 +490,27 @@ Domo.prototype.setupActuators = function() {
 
 Domo.prototype.updateActuatorInput = function(actuatorName, input) {
 	let value = input.value;
-	if (input.tagName.toLowerCase() == 'input') {
-		if (input.type == 'checkbox') {
-			value = input.checked;
-		} else if (input.type == 'range') {
-			value = input.valueAsNumber;
-			if ('exp' in input.dataset) {
-				value = Math.exp(value);
-			}
+
+	if (input.type === 'checkbox') {
+		value = input.checked;
+
+	} else if (input.type === 'range') {
+		value = input.valueAsNumber;
+		if ('exp' in input.dataset) {
+			value = Math.exp(value);
+		}
+	}
+
+	if ('type' in input.dataset) {
+		let time = new Date((Math.floor(Date.now() / 1000 / 86400) * 86400 + this.actuators[actuatorName][input.name]) * 1000);
+		if (input.dataset.type == 'hours-tz') {
+			time.setHours(value);
+			value = time.getTime() / 1000 % 86400;
+		} else if (input.dataset.type == 'minutes-tz') {
+			time.setMinutes(value);
+			value = time.getTime() / 1000 % 86400;
+		} else if (input.dataset.type == 'minutes') {
+			value = value * 60;
 		}
 	}
 
@@ -561,11 +574,12 @@ Domo.prototype.updateActuators = function(updateInputs) {
 		let inputList = div.querySelectorAll('[name]');
 		for (let i_il=0; i_il<inputList.length; i_il++) {
 			let input = inputList[i_il];
-			let enabled = false;
+			let enabled = true;
 
 			// Enable inputs based on knowing what actuator it is and how it
 			// works.
 			if (actuatorName === 'colorlight') {
+				enabled = false;
 				if (input.name === 'mode' || input.name == 'disabled') {
 					enabled = true;
 				} else if (actuator.mode === 'hsv' || actuator.mode === 'hsv-max') {
@@ -598,12 +612,34 @@ Domo.prototype.updateActuators = function(updateInputs) {
 			if (updateInputs) {
 				if (input.type == 'checkbox') {
 					input.checked = actuator[input.name];
+
+				} else if (input.type == 'radio') {
+					input.checked = input.value == actuator[input.name];
+
 				} else {
+					let value = actuator[input.name];
+
+					// Logarithmic scale.
 					if ('exp' in input.dataset) {
-						input.value = Math.log(actuator[input.name]);
-					} else {
-						input.value = actuator[input.name];
+						value = Math.log(value);
 					}
+
+					if ('type' in input.dataset) {
+						// Calculate hour/minutes etc from seconds.
+						let time = new Date((Math.floor(Date.now() / 1000 / 86400) * 86400 + value) * 1000);
+
+						if (input.dataset.type == 'minutes') {
+							value = value / 60;
+						} else if (input.dataset.type == 'hours-tz') {
+							value = time.getHours();
+						} else if (input.dataset.type == 'minutes-tz') {
+							value = time.getMinutes();
+						} else {
+							console.warn('unknown type: ' + input.dataset.type);
+						}
+					}
+
+					input.value = value;
 				}
 			}
 			if (input.type == 'range') {
