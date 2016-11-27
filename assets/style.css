@@ -4,6 +4,7 @@ html, body {
 	padding: 0;
 	height: 100%;
 	box-sizing: border-box;
+	font-family: Georgia, 'Droid Serif';
 }
 html {
 	max-width: 700px;
@@ -20,6 +21,16 @@ h1 {
 	padding: 8px;
 }
 
+h2 {
+	font-size: 1.3em;
+}
+
+@media (max-height: 550px) { /* 550px: 2 sensors on the 'Sensors' tab */
+	h2 {
+		margin: 8px 0 4px 0;
+	}
+}
+
 input[type=range] {
 	width: 100%;
 }
@@ -34,6 +45,7 @@ input[type=range] {
 	display: flex;
 	justify-content: center;
 	border-bottom: 1px solid black;
+	margin: 0 8px;
 	padding: 0 16px 0 16px;
 }
 
@@ -77,9 +89,21 @@ input[type=range] {
 	display: none;
 }
 
+.stats:not(:first-child) {
+	margin-top: 16px;
+}
+
 .stats-graph {
 	width: 100%;
 	height: 150px;
+}
+@media (max-height: 550px) { /* 550px: 2 sensors on the 'Sensors' tab */
+	.stats:not(:first-child) {
+		margin-top: 0; /* default */
+	}
+	.stats-graph {
+		height: 145px;
+	}
 }
 
 #connectionStatus {
