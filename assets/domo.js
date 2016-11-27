@@ -653,6 +653,17 @@ Domo.prototype.onresize = function() {
 	// FIXME forcing a layout here
 	window.requestAnimationFrame(function() {
 		for (let sensor in this.sensors) {
+			let graphWrapper = document.getElementById('stats-sensor-' + sensor);
+			let width = getComputedStyle(graphWrapper).width;
+			if (width === this.sensors[sensor].previousWidth || graphWrapper.offsetParent === null) {
+				// graphWrapper.offsetParent is null when it is not displayed (display:
+				// none). This happens when it is hidden via the tab bar.
+				// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
+				// Do not redraw in that case.
+				continue;
+			}
+			console.log('redrawing ' + sensor);
+			this.sensors[sensor].previousWidth = width;
 			this.redrawGraph(sensor);
 		}
 	}.bind(this));
