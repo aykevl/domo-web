@@ -62,4 +62,8 @@ function setupTabs() {
   }
 }
 
-setupTabs();
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', setupTabs);
+} else {
+  setupTabs();
+}

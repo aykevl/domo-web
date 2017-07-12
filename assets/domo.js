@@ -277,6 +277,28 @@ Domo.prototype.sensorKeys = function() {
 }
 
 Domo.prototype.redrawGraph = function(sensor) {
+	let graphWrapper = document.getElementById('stats-sensor-' + sensor);
+	let graph = graphWrapper.querySelector('.stats-graph');
+	let cs = getComputedStyle(graph);
+	let graphWidth = parseFloat(cs.width);
+	let graphHeight = parseFloat(cs.height);
+
+	if (isNaN(graphWidth) || isNaN(graphHeight)) {
+		// Hack: delay a bit until the style is hopefully there
+		console.warn('delay redrawing ' + sensor);
+		setTimeout(function() {
+			this.redrawGraph(sensor);
+		}.bind(this), 10);
+		return;
+	}
+
+	// Only redraw when necessary
+	if (graphWidth === this.sensors[sensor].graph.width) {
+		return;
+	}
+	this.sensors[sensor].graph.width = graphWidth;
+	console.log('redrawing ' + sensor);
+
 	let data = this.sensors[sensor].data;
 	let now = new Date();
 	let lastLog = data.log[data.log.length-1];
@@ -285,12 +307,6 @@ Domo.prototype.redrawGraph = function(sensor) {
 	let timeStart = timeEnd - GRAPH_TIME;
 	let timeSpan = timeEnd - timeStart;
 	let timeStep = 60*60*1; // 1 hour
-
-	let graphWrapper = document.getElementById('stats-sensor-' + sensor);
-	let graph = graphWrapper.querySelector('.stats-graph');
-	let cs = getComputedStyle(graph);
-	let graphWidth = parseFloat(cs.width);
-	let graphHeight = parseFloat(cs.height);
 
 	let valueMin = Infinity;
 	let valueMax = -Infinity;
@@ -335,11 +351,6 @@ Domo.prototype.redrawGraph = function(sensor) {
 		lastValueStr += UNITS[data.type];
 	}
 	graphWrapper.querySelector('.stats-header').innerText = (data.humanName || sensor) + ' — ' + lastValueStr;
-
-	if (graphWidth === this.sensors[sensor].graph.width) {
-		return;
-	}
-	this.sensors[sensor].graph.width = graphWidth;
 
 	// Utility functions
 	function toGraphX(time) {
@@ -429,7 +440,7 @@ Domo.prototype.redrawGraph = function(sensor) {
 	}
 	for (let row of data.log) {
 		let newLineStyle = lineStyle;
-		if (prevRow == null || Math.abs(row.time - prevRow.time) <= Math.max(row.interval, prevRow.interval)) {
+		if (prevRow == null || Math.abs(row.time - prevRow.time) <= Math.max(row.interval, prevRow.interval) * 1.1) { // allow 10% variation
 			newLineStyle = CONNECTED;
 		} else {
 			newLineStyle = DOTTED;
@@ -475,15 +486,17 @@ Domo.prototype.setupActuators = function() {
 		for (let i_il=0; i_il<inputList.length; i_il++) {
 			let input = inputList[i_il];
 			let tagName = input.tagName.toLowerCase();
-			if (tagName == 'select' || tagName == 'input' && (input.type == 'checkbox' || input.type == 'radio')) {
-				input.addEventListener('change', (e) => {
-					this.updateActuatorInput(actuatorName, input);
-				});
+			let eventName;
+			if (tagName === 'select' || tagName === 'input' && (input.type === 'checkbox' || input.type === 'radio')) {
+				eventName = 'change';
+			} else if (tagName === 'input' && (input.type === 'text' || input.type === 'number')) {
+				eventName = 'blur';
 			} else {
-				input.addEventListener('input', (e) => {
-					this.updateActuatorInput(actuatorName, input);
-				});
+				eventName = 'input';
 			}
+			input.addEventListener(eventName, (e) => {
+				this.updateActuatorInput(actuatorName, input);
+			});
 		}
 	}
 }
@@ -580,7 +593,7 @@ Domo.prototype.updateActuators = function(updateInputs) {
 			// works.
 			if (actuatorName === 'colorlight') {
 				enabled = false;
-				if (input.name === 'mode' || input.name == 'disabled') {
+				if (input.name === 'mode' || input.name == 'enabled') {
 					enabled = true;
 				} else if (actuator.mode === 'hsv' || actuator.mode === 'hsv-max') {
 					if ((input.name === 'time' || input.name == 'reverse') && actuator.looping) {
@@ -654,16 +667,13 @@ Domo.prototype.onresize = function() {
 	window.requestAnimationFrame(function() {
 		for (let sensor in this.sensors) {
 			let graphWrapper = document.getElementById('stats-sensor-' + sensor);
-			let width = getComputedStyle(graphWrapper).width;
-			if (width === this.sensors[sensor].previousWidth || graphWrapper.offsetParent === null) {
+			if (graphWrapper.offsetParent === null) {
 				// graphWrapper.offsetParent is null when it is not displayed (display:
 				// none). This happens when it is hidden via the tab bar.
 				// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
 				// Do not redraw in that case.
 				continue;
 			}
-			console.log('redrawing ' + sensor);
-			this.sensors[sensor].previousWidth = width;
 			this.redrawGraph(sensor);
 		}
 	}.bind(this));

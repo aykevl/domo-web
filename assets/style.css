@@ -25,6 +25,72 @@ h2 {
 	font-size: 1.3em;
 }
 
+input[type=checkbox] {
+	-webkit-appearance: none;
+	width: 18px;
+	height: 18px;
+	margin: 0;
+	vertical-align: middle;
+	border: 1px solid black;
+	box-sizing: border-box;
+	position: relative;
+}
+input[type=checkbox]:checked:before {
+	content: '';
+	background-image: url(checked.svg);
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+}
+input[type=checkbox]:focus {
+	outline: none;
+	box-shadow: 0 0 0 1px black;
+}
+input[type=checkbox]:disabled {
+	opacity: 0.5;
+}
+
+select {
+	background: none;
+	border: 1px solid black;
+}
+select:focus {
+	outline: none;
+	box-shadow: 0 0 0 1px black;
+}
+
+select > * { /* target shadow DOM */
+	font-style: normal;
+}
+
+input[type=range] {
+	-webkit-appearance: none;
+	height: 18px;
+}
+input[type=range]::-webkit-slider-runnable-track {
+	height: 1px;
+	background: black;
+}
+input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 18px;
+	height: 18px;
+	margin-top: -8px;
+	border-radius: 9px;
+	border: 1.5px solid black;
+	background: radial-gradient(circle at 50% 50%, white 0px, white 4.2px, black 4.2px, black 5px, white 5px);
+}
+input[type=range]:focus {
+	outline: none;
+}
+input[type=range]:focus::-webkit-slider-thumb {
+	background: radial-gradient(circle at 50% 50%, black 0px, black 4.2px, white 4.2px, white 5px, black 5px);
+	border-color: white;
+	box-shadow: 0 0 0 1px black;
+}
+
+
+
 @media (max-height: 550px) { /* 550px: 2 sensors on the 'Sensors' tab */
 	h2 {
 		margin: 8px 0 4px 0;

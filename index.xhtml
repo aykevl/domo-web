@@ -9,93 +9,126 @@
 		<link rel="manifest" href="/manifest.json"/>
 		<link rel="icon" sizes="32x32" href="/assets/icon32.png"/>
 		<link rel="icon" sizes="128x128" href="/assets/icon128.png"/>
+		<script src="/assets/script.js" defer=""></script>
+		<script src="/assets/domo.js" defer=""></script>
 	</head>
 	<body>
 		<h1>Domotica <p id="connectionStatus"></p></h1>
 		<div id="tabs">
 			<a href="#stats" class="tab" id="tab-stats">Sensor</a>
-			<a href="#colorlight" class="tab" id="tab-colorlight">Color</a>
-			<a href="#wakeup" class="tab" id="tab-wakeup">Wakeup</a>
+			<a href="#amplifier" class="tab" id="tab-amplifier">Amp</a>
+			<a href="#ledstrip" class="tab" id="tab-ledstrip">Ledstrip</a>
+			<a href="#light" class="tab" id="tab-light">Light</a>
 		</div>
 		<div id="tabfield">
 			<div class="tabdata" id="stats"></div>
-			<div class="tabdata actuator" id="colorlight" data-actuator="colorlight">
-				<h2>Color</h2>
+			<div class="tabdata actuator" id="amplifier" data-actuator="amplifier">
+				<h2>Amplifier</h2>
+				<dl>
+					<dd>
+						<label class="nowrap">
+							<input type="checkbox" name="enabled" disabled=""/>
+							Enabled
+						</label>
+					</dd>
+					<div class="slider">
+						<dt>Volume: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="volume" min="0" max="64" step="1" disabled="" data-scale="literal"/></dd>
+					</div>
+				</dl>
+			</div>
+			<div class="tabdata actuator" id="ledstrip" data-actuator="ledstrip">
+				<h2>Ledstrip</h2>
 				<dl>
 					<dt>Mode:</dt>
 					<dd>
 						<select name="mode" disabled="">
-							<option value="hsv">HSV</option>
-							<option value="hsv-max">HSV maximized</option>
-							<option value="rgb">RGB</option>
+							<option value="off">Disabled</option>
+							<option value="rainbow">Rainbow</option>
+							<option value="noise">Noise</option>
+							<option value="flame">Flame</option>
+							<option value="white">White</option>
+							<option value="palette">Palette</option>
 						</select>
-						<label class="nowrap">
-							<input type="checkbox" name="disabled" disabled=""/>
-							Disabled
-						</label>
-						<label class="nowrap">
-							<input type="checkbox" name="looping" disabled=""/>
-							Looping
-						</label>
-						<label class="nowrap">
-							<input type="checkbox" name="reverse" disabled=""/>
-							Reverse
-						</label>
+						<div>
+							<label class="nowrap">
+								<input type="checkbox" name="sparkles" disabled=""/>
+								Sparkles
+							</label>
+							<label class="nowrap">
+								<input type="checkbox" name="rainbowBackwards" disabled=""/>
+								Move backwards
+							</label>
+							<label class="nowrap">
+								<input type="checkbox" name="rainbowRBG" disabled=""/>
+								Reverse colors
+							</label>
+						</div>
 					</dd>
 					<div class="slider">
-						<dt>Time: <span class="sliderValue"></span></dt>
-						<dd><input type="range" name="time" min="0" max="11.37" data-unit="time" data-exp="" step="0.01" disabled=""/></dd>
+						<dt>Speed: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="speed" min="0" max="5" step="1" value="3" disabled=""/></dd>
 					</div>
 					<div class="slider">
-						<dt>Color: <span class="sliderValue"></span></dt>
-						<dd><input type="range" name="hue" min="0" max="1" step="0.001" value="0" disabled=""/></dd>
+						<dt>Spread: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="spread" min="0" max="1" step="0.001" value="0.125" disabled=""/></dd>
 					</div>
 					<div class="slider">
-						<dt>Saturation: <span class="sliderValue"></span></dt>
-						<dd><input type="range" name="saturation" min="0" max="1" step="0.001" disabled=""/></dd>
+						<dt>Whiteness: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="white" min="0" max="255" step="1" disabled=""/></dd>
 					</div>
 					<div class="slider">
-						<dt>Brightness: <span class="sliderValue"></span></dt>
-						<dd><input type="range" name="value" min="0" max="1" step="0.001" disabled=""/></dd>
+						<dt>Dimming: <span class="sliderValue"></span></dt>
+						<dd><input type="range" name="dim" min="0" max="20" step="1" disabled=""/></dd>
 					</div>
-					<div class="slider">
-						<dt>Red: <span class="sliderValue"></span></dt>
-						<dd><input type="range" name="red" min="0" max="1" step="0.001" disabled=""/></dd>
-					</div>
-					<div class="slider">
-						<dt>Green: <span class="sliderValue"></span></dt>
-						<dd><input type="range" name="green" min="0" max="1" step="0.001" disabled=""/></dd>
-					</div>
-					<div class="slider">
-						<dt>Blue: <span class="sliderValue"></span></dt>
-						<dd><input type="range" name="blue" min="0" max="1" step="0.001" disabled=""/></dd>
-					</div>
+					<dt>Palette:</dt>
+					<dd>
+						<select name="palette" disabled="">
+							<option value="0">Rainbow</option>
+							<option value="1">Heat</option>
+							<option value="2">Lava</option>
+							<option value="3">Red-blue</option>
+							<option value="4">Red-yellow</option>
+							<option value="5">Ocean</option>
+						</select>
+					</dd>
 				</dl>
 			</div>
-			<div class="tabdata actuator" id="wakeup" data-actuator="wakeup">
-				<h2>Wakeup</h2>
-				<dl>
-					<dt>State:</dt>
-					<dd>
-						<label><input type="radio" name="state" value="off"/>Off</label>
-						<label><input type="radio" name="state" value="wake"/>Wake</label>
-						<label><input type="radio" name="state" value="on"/>On</label>
-					</dd>
+			<div class="tabdata" id="light">
+				<form class="actuator" data-actuator="wakeup">
+					<h2>Wakeup</h2>
+					<dl>
+						<dt>State:</dt>
+						<dd>
+							<label class="nowrap">
+								<input type="checkbox" name="enabled" disabled=""/>
+								Enabled
+							</label>
+						</dd>
+						<dd>
+							<label><input type="radio" name="state" value="off"/>Off</label>
+							<label><input type="radio" name="state" value="wake"/>Wake</label>
+							<label><input type="radio" name="state" value="on"/>On</label>
+						</dd>
 
-					<dt>Time:</dt>
-					<dd>
-						<input type="number" name="time" min="1" max="60" step="1" data-type="hours-tz"/> :
-						<input type="number" name="time" min="1" max="60" step="1" data-type="minutes-tz"/>
-					</dd>
+						<dt>Fully lit:</dt>
+						<dd>
+							<input type="number" name="time" min="0" max="23" step="1" data-type="hours-tz"/> :
+							<input type="number" name="time" min="1" max="60" step="1" data-type="minutes-tz"/>
+						</dd>
 
-					<dt>Duration:</dt>
-					<dd><input type="number" name="duration" min="1" max="60" step="1" data-type="minutes"/> minutes</dd>
-				</dl>
+						<dt>Dawn duration:</dt>
+						<dd><input type="number" name="duration" min="1" max="60" step="1" data-type="minutes"/> minutes</dd>
+
+						<div class="slider">
+							<dt>Max brightness: <span class="sliderValue"></span></dt>
+							<dd><input type="range" name="fullBrightness" min="0" max="1" step="0.001" disabled=""/></dd>
+						</div>
+					</dl>
+				</form>
 			</div>
 		</div>
 	</body>
-	<script src="/assets/script.js"></script>
-	<script src="/assets/domo.js"></script>
 	<div id="templates">
 		<div class="stats">
 			<h2 class="stats-header"></h2>
