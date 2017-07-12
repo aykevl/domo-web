@@ -35,7 +35,7 @@ function Domo() {
 	this.connection = null;
 	this.reconnectCount = 0;
 	this.lastScreenWidth = window.innerWidth;
-	this.deviceSerial = localStorage.deviceSerial;
+	this.password = localStorage.password || localStorage.deviceSerial;
 
 	let sensorData = JSON.parse(localStorage['sensors'] || '{}');
 	for (let name in sensorData) {
@@ -52,11 +52,11 @@ function Domo() {
 	this.updateActuators(true);
 	window.addEventListener('resize', this.onresize.bind(this));
 	document.querySelector('#connectionStatus').addEventListener('click', function() {
-		let deviceSerial = prompt('What is the device serial number?', this.deviceSerial || '');
-		if (!deviceSerial) return;
-		this.deviceSerial = deviceSerial;
-		if (localStorage.deviceSerial != deviceSerial) {
-			localStorage.deviceSerial = deviceSerial;
+		let password = prompt('What is the device password?', this.password || '');
+		if (!password) return;
+		this.password = password;
+		if (localStorage.password != password) {
+			localStorage.password = password;
 			// TODO reconnect while connecting?
 			if (this.connection) {
 				this.connection.closeReason = 'reconnect';
@@ -107,7 +107,7 @@ Domo.prototype.connect = function() {
 		}
 		this.connection.send(JSON.stringify({
 			'message': 'connect',
-			'deviceSerial': this.deviceSerial,
+			'password': this.password,
 			'lastLogTimes': lastLogTimes,
 		}));
 	}.bind(this);
